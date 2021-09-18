@@ -3,5 +3,5 @@ src/*.o
 src/*~
 include/*~
 *.o
+*.local.txt
 OnvifPVR
-

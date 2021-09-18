@@ -19,7 +19,7 @@ VideoPlayer::VideoPlayer(std::vector<Camera*> &cameras, const char * title) {
 	this->cameras = cameras;
 	this->title = title;
 	stopped = false;
-	
+
 	std::cout << "Initializing, title: " << title << std::endl;
 }
 
@@ -169,9 +169,13 @@ cv::Mat VideoPlayer::makeCanvas(std::vector<cv::Mat>& vecMat, cv::Mat &canvasIma
 
             if (vecMat[k].channels() != canvasImage.channels()) {
                 if (vecMat[k].channels() == 1) {
+                    #if CV_VERSION_MAJOR >= 4
+                    cv::cvtColor(vecMat[k], target_ROI, cv::COLOR_GRAY2BGR);
+                    #else
                     cv::cvtColor(vecMat[k], target_ROI, CV_GRAY2BGR);
+                    #endif
                 }
-            } else {             
+            } else {
                 vecMat[k].copyTo(target_ROI);
             }
             cv::resize(target_ROI, target_ROI, s);

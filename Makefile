@@ -1,5 +1,5 @@
 FLAGS=-g -std=c++11 -lpthread -lX11
-FLAGS_OPENCV=`pkg-config --cflags --libs opencv`
+FLAGS_OPENCV=`pkg-config --cflags --libs opencv4`
 INCLUDES=-Iinclude
 LIBS=-lm -L/usr/local/lib/x86_64-linux-gnu/
 TARGET=OnvifPVR

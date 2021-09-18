@@ -26,7 +26,7 @@ Camera::Camera(char * title, char * url, bool udp, bool save) {
 
 	width = height = 0;
 	hasMovement=false;
-	
+
 	frameListener = NULL;
 
 	grayImage.release();
@@ -36,7 +36,11 @@ Camera::Camera(char * title, char * url, bool udp, bool save) {
 
 	gettimeofday(&lastMovementTime, NULL);
 
+    #if CV_VERSION_MAJOR >= 4
+	loading = cv::imread("imgs/loading.png", cv::IMREAD_COLOR);   // Read the file
+    #else
 	loading = cv::imread("imgs/loading.png", CV_LOAD_IMAGE_COLOR);   // Read the file
+    #endif
 }
 
 Camera::~Camera() {
@@ -44,11 +48,11 @@ Camera::~Camera() {
 
 	if (lastFrame)
 		delete [] lastFrame;
-		
+
 	grayImage.release();
 	colorImage.release();
 	frame.release();
-		
+
 	for (std::vector<VideoListener*>::iterator it = moveListeners.begin(); it != moveListeners.end(); it++) {
 		std::cout << title << "::Deleting::" << *it << std::endl;
 		if (*it) {
@@ -58,7 +62,7 @@ Camera::~Camera() {
 		}
 	}
 	moveListeners.clear();
-	
+
 	if (title)
 		delete [] title;
 	if (url)
@@ -213,17 +217,22 @@ mtx2->unlock();
 		}
 
 		qFailures = 0;
-	
-		width = stream->get(CV_CAP_PROP_FRAME_WIDTH); //get the width of frames of the video
-		height = stream->get(CV_CAP_PROP_FRAME_HEIGHT); //get the height of frames of the video
+
+        #if CV_VERSION_MAJOR >= 4
+		width = stream->get(cv::CAP_PROP_FRAME_WIDTH); //get the width of frames of the video
+		height = stream->get(cv::CAP_PROP_FRAME_HEIGHT); //get the height of frames of the video
+        #else
+        width = stream->get(CV_CAP_PROP_FRAME_WIDTH); //get the width of frames of the video
+        height = stream->get(CV_CAP_PROP_FRAME_HEIGHT); //get the height of frames of the video
+        #endif
 		std::cout << title << "::Frame size : " << width << " x " << height << std::endl;
-		
+
 		for (std::vector<VideoListener*>::iterator it = moveListeners.begin(); it != moveListeners.end(); it++) {
 			(*it)->setWidthHeight(width, height);
 		}
 
 		int ret = playVideo(stream);
-	
+
 		if (ret==USER_QUIT) break; // So sai daqui no USER_QUIT, o INTERNAL_QUIT nao sai.
 	}
 	stop(); // force user_quit
@@ -304,9 +313,9 @@ int Camera::playVideo(cv::VideoCapture * stream) {
 					//grayImage = cv::Mat(colorImage.size(), CV_8UC1);
 				}
         		cvtColor(colorImage, grayImage, cv::COLOR_BGR2GRAY);
-        	
+
 				ready = true;
-        	
+
         		if (!verifyMovement(lastFrame, grayImage.data, qPixels)) {
     				gettimeofday(&actualTime, NULL);
     				diffTime = (actualTime.tv_sec-lastMovementTime.tv_sec)*1000000 + (actualTime.tv_usec-lastMovementTime.tv_usec);
@@ -325,7 +334,7 @@ int Camera::playVideo(cv::VideoCapture * stream) {
 
 		usleep(15000);
     }
-    
+
 	std::cout << title << " EXITING playVideo()\n";
 
 	//grayImage.release();

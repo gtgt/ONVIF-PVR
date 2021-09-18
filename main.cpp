@@ -83,7 +83,7 @@ int main(int argc, char* argv[]) {
 			if (cameras.empty()) {
 				if (url==NULL) {
 					printf("Looking for IP\n");
-					DiscoveryRTSP_IP disc("192.168.15.2"); // TODO dectar IP/rede auto
+					DiscoveryRTSP_IP disc("192.168.1.70"); // TODO dectar IP/rede auto
 					if (argc>2)
 						disc = DiscoveryRTSP_IP(argv[2]);
 						

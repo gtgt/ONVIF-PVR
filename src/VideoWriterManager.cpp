@@ -102,7 +102,11 @@ int VideoWriterManager::writeFrameVideo() {
 	           //CV_FOURCC('M','P','E','G'),
 	           //*CV_FOURCC('M','P','4','V'),
 	           //CV_FOURCC('W', 'M', 'V', '2'),
+               #if CV_VERSION_MAJOR >= 4
+	           cv::VideoWriter::fourcc('D','I','V','X'),
+               #else
 	           CV_FOURCC('D','I','V','X'),
+               #endif
 	           //CV_FOURCC('H','2','6','4'),
 	           //*CV_FOURCC('X','2','6','4'),
 	           //CV_FOURCC('X','I','V','D'),
